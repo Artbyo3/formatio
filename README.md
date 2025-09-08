@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Formatio - Editor de Texto Online
 
-## Getting Started
+Un editor de texto completo online similar a Google Docs o Microsoft Word, que funciona completamente en el navegador sin necesidad de registro o login. Todos los datos se guardan localmente usando localStorage.
 
-First, run the development server:
+## 🚀 Características Principales
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### ✨ Editor de Texto Rico
+- **Formato completo**: Negrita, cursiva, subrayado, tachado
+- **Alineación**: Izquierda, centro, derecha, justificado
+- **Listas**: Con viñetas y numeradas
+- **Elementos especiales**: Citas, código, títulos
+- **Colores**: Texto y fondo personalizables
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 📄 Gestión de Documentos
+- **Múltiples documentos**: Trabaja con varios documentos simultáneamente
+- **Pestañas**: Interfaz de pestañas para cambiar entre documentos
+- **Títulos editables**: Cambia el nombre de tus documentos
+- **Persistencia**: Todo se guarda automáticamente en localStorage
+- **Estadísticas**: Contador de palabras, caracteres y líneas
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🔍 Búsqueda y Reemplazo
+- **Búsqueda avanzada**: Con opciones de mayúsculas/minúsculas y palabras completas
+- **Expresiones regulares**: Soporte para búsquedas complejas
+- **Reemplazo**: Reemplaza texto individual o masivamente
+- **Navegación**: Navega entre coincidencias encontradas
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 📤 Exportación e Importación
+- **Formatos de exportación**: TXT, HTML, PDF (vía impresión), DOCX (vía HTML)
+- **Importación**: Carga archivos de texto existentes
+- **Nombres automáticos**: Genera nombres de archivo basados en el título del documento
 
-## Learn More
+### 🎨 Elementos de Inserción
+- **Enlaces**: Inserta enlaces con texto personalizable
+- **Imágenes**: Añade imágenes con URL, dimensiones y texto alternativo
+- **Tablas**: Crea tablas con filas y columnas personalizables
 
-To learn more about Next.js, take a look at the following resources:
+### ⌨️ Atajos de Teclado
+- `Ctrl+S`: Guardar documento
+- `Ctrl+N`: Nuevo documento
+- `Ctrl+F`: Buscar
+- `Ctrl+H`: Reemplazar
+- `Ctrl+Z`: Deshacer
+- `Ctrl+Y` o `Ctrl+Shift+Z`: Rehacer
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🔄 Historial de Cambios
+- **Deshacer/Rehacer**: Historial completo de cambios
+- **Persistencia**: El historial se mantiene durante la sesión
+- **Límite inteligente**: Máximo 50 estados para optimizar rendimiento
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Tecnologías Utilizadas
 
-## Deploy on Vercel
+- **Next.js 15**: Framework de React con App Router
+- **React 19**: Biblioteca de interfaz de usuario
+- **TypeScript**: Tipado estático para JavaScript
+- **Tailwind CSS**: Framework de estilos utilitarios
+- **Lucide React**: Iconos modernos y consistentes
+- **localStorage**: Almacenamiento local del navegador
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Instalación y Uso
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clona el repositorio**:
+   ```bash
+   git clone https://github.com/tu-usuario/formatio.git
+   cd formatio
+   ```
+
+2. **Instala las dependencias**:
+   ```bash
+   npm install
+   ```
+
+3. **Ejecuta en modo desarrollo**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Abre tu navegador** en `http://localhost:3000`
+
+## 📱 Características Responsivas
+
+- **Diseño adaptativo**: Funciona perfectamente en móviles, tablets y escritorio
+- **Anuncios inteligentes**: Anuncios laterales en pantallas grandes, horizontales en móviles
+- **Interfaz optimizada**: Barra de herramientas y pestañas adaptadas a cada tamaño de pantalla
+
+## 🔒 Privacidad y Seguridad
+
+- **Sin registro**: No necesitas crear cuenta ni proporcionar datos personales
+- **Almacenamiento local**: Todos tus documentos se guardan en tu navegador
+- **Sin servidor**: No enviamos tus datos a ningún servidor externo
+- **Control total**: Tú tienes control completo sobre tus documentos
+
+## 🎯 Casos de Uso
+
+- **Escritura personal**: Diarios, notas, ideas
+- **Trabajo**: Documentos de oficina, reportes, presentaciones
+- **Educación**: Tareas, ensayos, apuntes
+- **Creatividad**: Historias, poesía, guiones
+- **Productividad**: Listas, planificaciones, documentación
+
+## 🔮 Próximas Características
+
+- [ ] Colaboración en tiempo real
+- [ ] Plantillas de documentos
+- [ ] Sincronización con la nube
+- [ ] Temas personalizables
+- [ ] Atajos de teclado personalizables
+- [ ] Soporte para Markdown
+- [ ] Integración con servicios de almacenamiento
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor, abre un issue o pull request para sugerir mejoras.
+
+---
+
+**Formatio** - Tu editor de texto online, simple y poderoso. ✨

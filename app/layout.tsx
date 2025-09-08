@@ -7,9 +7,9 @@ import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Formateador de Texto",
+  title: "Formatio - Editor de Texto Online",
   description:
-    "Una herramienta simple para formatear, limpiar y transformar texto",
+    "Editor de texto completo online similar a Google Docs. Crea, edita y formatea documentos sin necesidad de registro. Incluye múltiples documentos, formato rico, búsqueda y reemplazo, exportación y más.",
   icons: {
     icon: "/favicon.ico",
   },
