@@ -56,25 +56,6 @@ Un editor de texto completo online similar a Google Docs o Microsoft Word, que f
 - **Lucide React**: Iconos modernos y consistentes
 - **localStorage**: Almacenamiento local del navegador
 
-## 🚀 Instalación y Uso
-
-1. **Clona el repositorio**:
-   ```bash
-   git clone https://github.com/tu-usuario/formatio.git
-   cd formatio
-   ```
-
-2. **Instala las dependencias**:
-   ```bash
-   npm install
-   ```
-
-3. **Ejecuta en modo desarrollo**:
-   ```bash
-   npm run dev
-   ```
-
-4. **Abre tu navegador** en `http://localhost:3000`
 
 ## 📱 Características Responsivas
 
@@ -97,15 +78,6 @@ Un editor de texto completo online similar a Google Docs o Microsoft Word, que f
 - **Creatividad**: Historias, poesía, guiones
 - **Productividad**: Listas, planificaciones, documentación
 
-## 🔮 Próximas Características
-
-- [ ] Colaboración en tiempo real
-- [ ] Plantillas de documentos
-- [ ] Sincronización con la nube
-- [ ] Temas personalizables
-- [ ] Atajos de teclado personalizables
-- [ ] Soporte para Markdown
-- [ ] Integración con servicios de almacenamiento
 
 ## 📄 Licencia
 
