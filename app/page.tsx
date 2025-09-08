@@ -1,103 +1,258 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import dynamic from "next/dynamic";
+const Check = dynamic(() => import("lucide-react").then((mod) => mod.Check), {
+  ssr: false,
+});
+const Copy = dynamic(() => import("lucide-react").then((mod) => mod.Copy), {
+  ssr: false,
+});
+const Trash = dynamic(() => import("lucide-react").then((mod) => mod.Trash), {
+  ssr: false,
+});
+import { Badge } from "@/components/ui/badge";
+import { AdSpace } from "@/components/ad-space";
+import { AdHorizontal } from "@/components/ad-horizontal";
+import { Footer } from "@/components/footer";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [text, setText] = useState("");
+  const [result, setResult] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [stats, setStats] = useState({ chars: 0, words: 0, lines: 0 });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Update stats when text changes
+  useEffect(() => {
+    const chars = text.length;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const lines = text.trim() ? text.trim().split(/\n/).length : 0;
+    setStats({ chars, words, lines });
+  }, [text]);
+
+  const formatText = (type: string) => {
+    let formatted = text;
+
+    switch (type) {
+      case "uppercase":
+        formatted = text.toUpperCase();
+        break;
+      case "lowercase":
+        formatted = text.toLowerCase();
+        break;
+      case "capitalize":
+        formatted = text
+          .split(" ")
+          .map(
+            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          )
+          .join(" ");
+        break;
+      case "remove-extra-spaces":
+        // Elimina espacios duplicados y al inicio/final
+        formatted = text.replace(/\s+/g, " ").trim();
+        break;
+      case "sort-lines":
+        // Ordena las líneas alfabéticamente
+        formatted = text
+          .split("\n")
+          .filter((line) => line.trim() !== "")
+          .sort()
+          .join("\n");
+        break;
+      case "remove-empty-lines":
+        // Elimina líneas vacías
+        formatted = text
+          .split("\n")
+          .filter((line) => line.trim() !== "")
+          .join("\n");
+        break;
+      default:
+        formatted = text;
+    }
+
+    setResult(formatted);
+  };
+
+  const copyToClipboard = () => {
+    if (!result) return;
+    navigator.clipboard.writeText(result);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const clearText = () => {
+    setText("");
+    setResult("");
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <div className="flex flex-row flex-1">
+        {/* Espacio para anuncio izquierdo - solo visible en pantallas grandes */}
+        <div className="hidden lg:block w-1/6 p-4 sticky top-4 h-screen">
+          <AdSpace position="left" adSlot="6056376493" />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Contenido principal */}
+        <main className="flex-1 px-4 py-6 max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold text-center mb-2">Formatio</h1>
+          <p className="text-center text-muted-foreground mb-6">
+            Formatea tu texto al instante
+          </p>
+
+          {/* Anuncio horizontal - solo visible en pantallas pequeñas */}
+          <div className="block lg:hidden mb-6">
+            <AdHorizontal adSlot="5916775693" />
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card className="flex flex-col">
+              <CardHeader className="pb-3">
+                <CardTitle>Entrada</CardTitle>
+                <CardDescription className="flex flex-wrap justify-between items-center gap-2">
+                  <span>Pega tu texto aquí</span>
+                  <Badge
+                    variant="outline"
+                    className="whitespace-nowrap overflow-hidden text-ellipsis"
+                  >
+                    {stats.chars} caracteres | {stats.words} palabras |{" "}
+                    {stats.lines} líneas
+                  </Badge>
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-grow pb-2">
+                <textarea
+                  placeholder="Pega tu texto aquí"
+                  className="min-h-[300px] h-full w-full resize-none border rounded-md p-3"
+                  onChange={(e) => setText(e.target.value)}
+                  value={text}
+                />
+              </CardContent>
+              <CardFooter className="flex flex-wrap justify-between gap-2 pt-2">
+                <Button variant="outline" size="sm" onClick={clearText}>
+                  <Trash className="h-4 w-4 mr-2" />
+                  Limpiar
+                </Button>
+              </CardFooter>
+            </Card>
+
+            <Card className="flex flex-col">
+              <CardHeader className="pb-3">
+                <CardTitle>Resultado</CardTitle>
+                <CardDescription className="flex flex-wrap justify-between items-center gap-2">
+                  <span>Tu texto formateado</span>
+                  {result && (
+                    <Badge
+                      variant="outline"
+                      className="whitespace-nowrap overflow-hidden text-ellipsis"
+                    >
+                      {result.length} caracteres
+                    </Badge>
+                  )}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-grow pb-2 relative">
+                {/* Contenedor que se expande automáticamente */}
+                <div className="min-h-[300px] w-full border rounded-md p-3 whitespace-pre-wrap break-words">
+                  {result}
+                </div>
+              </CardContent>
+              <CardFooter className="flex flex-wrap justify-between gap-2 pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={copyToClipboard}
+                  disabled={!result}
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-4 w-4 mr-2" />
+                      ¡Copiado!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4 mr-2" />
+                      Copiar
+                    </>
+                  )}
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+
+          <div className="grid gap-6 mt-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle>Opciones de Formato</CardTitle>
+                <CardDescription>Elige cómo formatear tu texto</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    onClick={() => formatText("uppercase")}
+                    variant="outline"
+                  >
+                    MAYÚSCULAS
+                  </Button>
+                  <Button
+                    onClick={() => formatText("lowercase")}
+                    variant="outline"
+                  >
+                    minúsculas
+                  </Button>
+                  <Button
+                    onClick={() => formatText("capitalize")}
+                    variant="outline"
+                  >
+                    Capitalizar Palabras
+                  </Button>
+                  <Button
+                    onClick={() => formatText("remove-extra-spaces")}
+                    variant="outline"
+                  >
+                    Eliminar Espacios Extra
+                  </Button>
+                  <Button
+                    onClick={() => formatText("sort-lines")}
+                    variant="outline"
+                  >
+                    Ordenar Líneas
+                  </Button>
+                  <Button
+                    onClick={() => formatText("remove-empty-lines")}
+                    variant="outline"
+                  >
+                    Eliminar Líneas Vacías
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Anuncio horizontal - solo visible en pantallas pequeñas */}
+          <div className="block lg:hidden mt-6">
+            <AdHorizontal adSlot="5916775693" />
+          </div>
+        </main>
+
+        {/* Espacio para anuncio derecho - solo visible en pantallas grandes */}
+        <div className="hidden lg:block w-1/6 p-4 sticky top-4 h-screen">
+          <AdSpace position="right" adSlot="6056376493" />
+        </div>
+      </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
