@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NewDocumentDialog } from "@/components/new-document-dialog";
 import { 
   FileText, 
   Save, 
@@ -31,11 +32,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { Document } from "@/lib/document-manager";
+
+import { RichTextEditorRef } from "./rich-text-editor";
+
 interface CleanEditorProps {
-  documents: any[];
-  currentDocument: any;
+  documents: Document[];
+  currentDocument: Document | null;
   onSwitchDocument: (id: string) => void;
-  onCreateDocument: () => void;
+  onCreateDocument: (template?: { content: string; name: string }) => void;
   onUpdateTitle: (title: string) => void;
   onUpdateContent: (content: string) => void;
   onUpdateSelection: (start: number, end: number) => void;
@@ -45,7 +50,7 @@ interface CleanEditorProps {
   onUndo: () => void;
   onRedo: () => void;
   onSave: () => void;
-  editorRef: React.RefObject<any>;
+  editorRef: React.RefObject<RichTextEditorRef>;
   onViewChange: (view: string) => void;
 }
 
@@ -67,6 +72,7 @@ export function CleanEditor({
   onViewChange
 }: CleanEditorProps) {
   const [showDocumentTabs, setShowDocumentTabs] = useState(false);
+  const [showNewDocumentDialog, setShowNewDocumentDialog] = useState(false);
 
   if (!currentDocument) {
     return (
@@ -78,7 +84,7 @@ export function CleanEditor({
             <p className="text-muted-foreground mb-4">
               Selecciona un documento existente o crea uno nuevo
             </p>
-            <Button onClick={onCreateDocument}>
+            <Button onClick={() => setShowNewDocumentDialog(true)}>
               Crear Nuevo Documento
             </Button>
           </div>
@@ -170,7 +176,7 @@ export function CleanEditor({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onCreateDocument}
+                onClick={() => setShowNewDocumentDialog(true)}
                 className="whitespace-nowrap"
               >
                 + Nuevo
@@ -288,6 +294,16 @@ export function CleanEditor({
           </CardContent>
         </Card>
       </div>
+
+      {/* Diálogo de nuevo documento */}
+      <NewDocumentDialog
+        isOpen={showNewDocumentDialog}
+        onClose={() => setShowNewDocumentDialog(false)}
+        onCreateDocument={(template) => {
+          onCreateDocument(template);
+          setShowNewDocumentDialog(false);
+        }}
+      />
     </div>
   );
 }

@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { NewDocumentDialog } from "@/components/new-document-dialog";
 import { 
   X, 
   Plus, 
@@ -16,7 +18,7 @@ interface DocumentTabsProps {
   currentDocument: Document | null;
   onSwitchDocument: (documentId: string) => void;
   onCloseDocument: (documentId: string) => void;
-  onCreateDocument: () => void;
+  onCreateDocument: (template?: { content: string; name: string }) => void;
   isDirty: boolean;
 }
 
@@ -28,6 +30,7 @@ export function DocumentTabs({
   onCreateDocument,
   isDirty
 }: DocumentTabsProps) {
+  const [showNewDocumentDialog, setShowNewDocumentDialog] = useState(false);
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('es-ES', {
       month: 'short',
@@ -51,7 +54,7 @@ export function DocumentTabs({
         <Button
           variant="ghost"
           size="sm"
-          onClick={onCreateDocument}
+          onClick={() => setShowNewDocumentDialog(true)}
           className="shrink-0"
           title="Nuevo documento (Ctrl+N)"
         >
@@ -134,6 +137,16 @@ export function DocumentTabs({
           </>
         )}
       </div>
+
+      {/* Diálogo de nuevo documento */}
+      <NewDocumentDialog
+        isOpen={showNewDocumentDialog}
+        onClose={() => setShowNewDocumentDialog(false)}
+        onCreateDocument={(template) => {
+          onCreateDocument(template);
+          setShowNewDocumentDialog(false);
+        }}
+      />
     </div>
   );
 }

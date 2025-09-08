@@ -25,12 +25,8 @@ export default function Home() {
 
   const editorRef = useRef<RichTextEditorRef | null>(null);
 
-  // Crear documento inicial si no hay ninguno
-  useEffect(() => {
-    if (documents.length === 0) {
-      createNewDocument();
-    }
-  }, [documents.length, createNewDocument]);
+  // Ya no creamos automáticamente un documento inicial
+  // El usuario debe crear uno manualmente usando el modal de plantillas
 
   // Manejar atajos de teclado globales
   useEffect(() => {
@@ -43,7 +39,8 @@ export default function Home() {
             break;
           case 'n':
             e.preventDefault();
-            createNewDocument();
+            // El atajo Ctrl+N ahora debe abrir el diálogo, no crear directamente
+            // Esto se manejará en los componentes individuales
             break;
           case 'z':
             if (e.shiftKey) {

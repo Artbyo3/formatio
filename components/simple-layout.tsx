@@ -29,8 +29,12 @@ import { ToolsPanel } from "./tools-panel";
 import { StatsPanel } from "./stats-panel";
 import { StorageMonitor } from "./storage-monitor";
 
+import { Document } from "@/lib/document-manager";
+
+import { RichTextEditorRef } from "./rich-text-editor";
+
 interface SimpleLayoutProps {
-  currentDocument: any;
+  currentDocument: Document | null;
   onCreateDocument: () => void;
   onUpdateTitle: (title: string) => void;
   onUpdateContent: (content: string) => void;
@@ -41,7 +45,7 @@ interface SimpleLayoutProps {
   onUndo: () => void;
   onRedo: () => void;
   onSave: () => void;
-  editorRef: React.RefObject<any>;
+  editorRef: React.RefObject<RichTextEditorRef>;
 }
 
 export function SimpleLayout({

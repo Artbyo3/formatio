@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { 
   FileText, 
   Save, 
@@ -24,7 +25,9 @@ import {
   BarChart3,
   ArrowLeft,
   Type,
-  X
+  X,
+  Plus,
+  Zap
 } from "lucide-react";
 import { RichTextEditor, RichTextEditorRef } from "./rich-text-editor";
 import { ToolsPanel } from "./tools-panel";
@@ -35,7 +38,7 @@ interface WorkspaceViewProps {
   documents: Document[];
   currentDocument: Document | null;
   onSwitchDocument: (id: string) => void;
-  onCreateDocument: () => void;
+  onCreateDocument: (template?: { content: string; name: string }) => void;
   onUpdateTitle: (title: string) => void;
   onUpdateContent: (content: string) => void;
   onUpdateSelection: (start: number, end: number) => void;
@@ -51,6 +54,7 @@ interface WorkspaceViewProps {
 
 export function WorkspaceView({
   currentDocument,
+  onCreateDocument,
   onUpdateTitle,
   onUpdateContent,
   onUpdateSelection,
@@ -66,14 +70,58 @@ export function WorkspaceView({
   const [showToolsPanel, setShowToolsPanel] = useState(false);
   const [toolsTab, setToolsTab] = useState<'format' | 'analysis' | 'storage'>('format');
   const [formattedDate, setFormattedDate] = useState('');
+  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
+
+  // Plantillas disponibles (igual que en dashboard)
+  const templates = [
+    {
+      id: 'letter',
+      name: 'Carta Formal',
+      description: 'Plantilla para cartas formales y comerciales',
+      icon: '📝',
+      category: 'Correspondencia'
+    },
+    {
+      id: 'report',
+      name: 'Informe',
+      description: 'Estructura para informes y reportes',
+      icon: '📊',
+      category: 'Documentos'
+    },
+    {
+      id: 'meeting',
+      name: 'Acta de Reunión',
+      description: 'Plantilla para actas de reuniones',
+      icon: '👥',
+      category: 'Reuniones'
+    },
+    {
+      id: 'proposal',
+      name: 'Propuesta',
+      description: 'Estructura para propuestas comerciales',
+      icon: '💼',
+      category: 'Comercial'
+    },
+    {
+      id: 'resume',
+      name: 'Currículum',
+      description: 'Plantilla para currículum vitae',
+      icon: '👤',
+      category: 'Personal'
+    },
+    {
+      id: 'article',
+      name: 'Artículo',
+      description: 'Estructura para artículos y blogs',
+      icon: '📰',
+      category: 'Contenido'
+    }
+  ];
 
   // Formatear fecha de forma segura para evitar errores de hidratación
   useEffect(() => {
     if (currentDocument?.updatedAt) {
-      const date = currentDocument.updatedAt instanceof Date 
-        ? currentDocument.updatedAt 
-        : new Date(currentDocument.updatedAt);
-      setFormattedDate(date.toLocaleDateString('es-ES', {
+      setFormattedDate(currentDocument.updatedAt.toLocaleDateString('es-ES', {
         day: '2-digit',
         month: '2-digit',
         year: '2-digit'
@@ -139,7 +187,7 @@ export function WorkspaceView({
           </div>
 
           {/* Contenido del panel */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
             {toolsTab === 'format' && (
               <div className="space-y-4">
                 <h4 className="font-medium text-sm text-muted-foreground mb-3">Herramientas de Formateo</h4>
@@ -196,6 +244,16 @@ export function WorkspaceView({
 
             {/* Acciones principales */}
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowTemplatesModal(true)}
+                className="h-10 px-3 rounded-lg glass hover:shadow-glass smooth-transition"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                <span className="text-sm font-medium">Nuevo</span>
+              </Button>
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -373,6 +431,87 @@ export function WorkspaceView({
           </Card>
         </div>
       </div>
+
+      {/* Modal de Plantillas */}
+      {showTemplatesModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="glass-card rounded-2xl border-0 shadow-glass-lg w-full max-w-4xl max-h-[80vh] overflow-hidden">
+            <div className="p-6 border-b border-white/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                    <Zap className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">Plantillas</h2>
+                    <p className="text-sm text-muted-foreground">Selecciona una plantilla para crear tu documento</p>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowTemplatesModal(false)}
+                  className="h-10 w-10 p-0 rounded-xl glass hover:shadow-glass"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {templates.map((template) => (
+                  <Card
+                    key={template.id}
+                    className="glass-card rounded-xl border-0 shadow-glass smooth-transition hover:shadow-glass-lg hover:scale-105 cursor-pointer"
+                    onClick={() => {
+                      // Crear documento desde plantilla
+                      onCreateDocument();
+                      setShowTemplatesModal(false);
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="text-2xl">{template.icon}</div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-sm mb-1">{template.name}</h3>
+                          <p className="text-xs text-muted-foreground mb-2">{template.description}</p>
+                          <Badge variant="outline" className="text-xs">
+                            {template.category}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-white/10">
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowTemplatesModal(false)}
+                  className="rounded-xl glass hover:shadow-glass"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={() => {
+                    // Crear documento en blanco
+                    onCreateDocument();
+                    setShowTemplatesModal(false);
+                  }}
+                  className="rounded-xl glass shadow-glass-lg"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Documento en Blanco
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -9,12 +9,37 @@ import { StatsPanel } from "./stats-panel";
 import { SearchReplaceDialog } from "./search-replace-dialog";
 import { InsertDialog } from "./insert-dialog";
 
+import { Document } from "@/lib/document-manager";
+
+interface SearchOptions {
+  caseSensitive?: boolean;
+  wholeWord?: boolean;
+  regex?: boolean;
+}
+
+interface LinkData {
+  url: string;
+  text: string;
+}
+
+interface ImageData {
+  src: string;
+  alt: string;
+  width: string;
+  height: string;
+}
+
+interface TableData {
+  rows: number;
+  cols: number;
+}
+
 interface ImprovedLayoutProps {
   // Documentos
-  documents: any[];
-  currentDocument: any;
+  documents: Document[];
+  currentDocument: Document | null;
   onSwitchDocument: (id: string) => void;
-  onCreateDocument: () => void;
+  onCreateDocument: (template?: { content: string; name: string }) => void;
   onDeleteDocument: (id: string) => void;
   onUpdateTitle: (title: string) => void;
   onUpdateContent: (content: string) => void;
@@ -40,10 +65,10 @@ interface ImprovedLayoutProps {
   onSearch: () => void;
   onCloseSearch: () => void;
   onCloseInsert: () => void;
-  onSearchAction: (query: string, options: any) => void;
-  onReplaceAction: (query: string, replacement: string, options: any) => void;
-  onReplaceAllAction: (query: string, replacement: string, options: any) => void;
-  onInsertAction: (type: string, data: any) => void;
+  onSearchAction: (query: string, options: SearchOptions) => void;
+  onReplaceAction: (query: string, replacement: string, options: SearchOptions) => void;
+  onReplaceAllAction: (query: string, replacement: string, options: SearchOptions) => void;
+  onInsertAction: (type: 'link' | 'image' | 'table', data: LinkData | ImageData | TableData) => void;
   
   // Exportación e importación
   onExport: (format: string) => void;

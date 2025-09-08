@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
 import { 
   FileText, 
   BarChart3, 
@@ -15,14 +16,18 @@ import {
   Clock,
   Trash2,
   Eye,
-  EyeOff
+  EyeOff,
+  Zap,
+  X
 } from "lucide-react";
 
+import { Document } from "@/lib/document-manager";
+
 interface MainSidebarProps {
-  documents: any[];
-  currentDocument: any;
+  documents: Document[];
+  currentDocument: Document | null;
   onSwitchDocument: (id: string) => void;
-  onCreateDocument: () => void;
+  onCreateDocument: (template?: { content: string; name: string }) => void;
   onDeleteDocument: (id: string) => void;
   onSave: () => void;
   onExport: (format: string) => void;
@@ -50,9 +55,56 @@ export function MainSidebar({
   isDirty
 }: MainSidebarProps) {
   const [showRecent, setShowRecent] = useState(true);
+  const [showTemplatesModal, setShowTemplatesModal] = useState(false);
+
+  // Plantillas disponibles
+  const templates = [
+    {
+      id: 'letter',
+      name: 'Carta Formal',
+      description: 'Plantilla para cartas formales y comerciales',
+      icon: '📝',
+      category: 'Correspondencia'
+    },
+    {
+      id: 'report',
+      name: 'Informe',
+      description: 'Estructura para informes y reportes',
+      icon: '📊',
+      category: 'Documentos'
+    },
+    {
+      id: 'meeting',
+      name: 'Acta de Reunión',
+      description: 'Plantilla para actas de reuniones',
+      icon: '👥',
+      category: 'Reuniones'
+    },
+    {
+      id: 'proposal',
+      name: 'Propuesta',
+      description: 'Estructura para propuestas comerciales',
+      icon: '💼',
+      category: 'Comercial'
+    },
+    {
+      id: 'resume',
+      name: 'Currículum',
+      description: 'Plantilla para currículum vitae',
+      icon: '👤',
+      category: 'Personal'
+    },
+    {
+      id: 'article',
+      name: 'Artículo',
+      description: 'Estructura para artículos y blogs',
+      icon: '📰',
+      category: 'Contenido'
+    }
+  ];
 
   const recentDocuments = documents
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
     .slice(0, 5);
 
   return (
@@ -69,7 +121,7 @@ export function MainSidebar({
           </div>
         </div>
         
-        <Button onClick={onCreateDocument} className="w-full" size="sm">
+        <Button onClick={() => setShowTemplatesModal(true)} className="w-full" size="sm">
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Documento
         </Button>
@@ -182,7 +234,7 @@ export function MainSidebar({
                       <p className="text-sm font-medium truncate">{doc.title}</p>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
-                        <span>{new Date(doc.updatedAt).toLocaleDateString()}</span>
+                        <span>{doc.updatedAt.toLocaleDateString()}</span>
                         <Badge variant="outline" className="text-xs">
                           {doc.wordCount}w
                         </Badge>
@@ -229,6 +281,87 @@ export function MainSidebar({
           )}
         </div>
       </div>
+
+      {/* Modal de Plantillas */}
+      {showTemplatesModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="glass-card rounded-2xl border-0 shadow-glass-lg w-full max-w-4xl max-h-[80vh] overflow-hidden">
+            <div className="p-6 border-b border-white/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                    <Zap className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">Plantillas</h2>
+                    <p className="text-sm text-muted-foreground">Selecciona una plantilla para crear tu documento</p>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowTemplatesModal(false)}
+                  className="h-10 w-10 p-0 rounded-xl glass hover:shadow-glass"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {templates.map((template) => (
+                  <Card
+                    key={template.id}
+                    className="glass-card rounded-xl border-0 shadow-glass smooth-transition hover:shadow-glass-lg hover:scale-105 cursor-pointer"
+                    onClick={() => {
+                      // Crear documento desde plantilla
+                      onCreateDocument();
+                      setShowTemplatesModal(false);
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="text-2xl">{template.icon}</div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-sm mb-1">{template.name}</h3>
+                          <p className="text-xs text-muted-foreground mb-2">{template.description}</p>
+                          <Badge variant="outline" className="text-xs">
+                            {template.category}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-white/10">
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowTemplatesModal(false)}
+                  className="rounded-xl glass hover:shadow-glass"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={() => {
+                    // Crear documento en blanco
+                    onCreateDocument();
+                    setShowTemplatesModal(false);
+                  }}
+                  className="rounded-xl glass shadow-glass-lg"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Documento en Blanco
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

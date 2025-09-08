@@ -42,8 +42,15 @@ export function useEditor() {
   }, []);
 
   // Crear nuevo documento
-  const createNewDocument = useCallback(() => {
+  const createNewDocument = useCallback((template?: { content: string; name: string }) => {
     const newDoc = DocumentManager.createNewDocument();
+    
+    // Si hay una plantilla, aplicar el contenido y título
+    if (template) {
+      newDoc.content = template.content;
+      newDoc.title = template.name;
+    }
+    
     DocumentManager.saveDocument(newDoc);
     DocumentManager.setCurrentDocumentId(newDoc.id);
     

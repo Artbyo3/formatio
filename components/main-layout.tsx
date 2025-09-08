@@ -18,7 +18,7 @@ interface MainLayoutProps {
   documents: Document[];
   currentDocument: Document | null;
   onSwitchDocument: (id: string) => void;
-  onCreateDocument: () => void;
+  onCreateDocument: (template?: { content: string; name: string }) => void;
   onDeleteDocument: (id: string) => void;
   onUpdateTitle: (title: string) => void;
   onUpdateContent: (content: string) => void;
@@ -107,17 +107,8 @@ export function MainLayout({
         <div className="p-6 border-t border-white/10 mt-auto">
           <div className="glass-card rounded-xl p-4">
             <div className="text-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-xs font-medium">{documents.length} docs</span>
-                </div>
-              </div>
-              
               {/* Información de almacenamiento */}
-              <div className="pt-2 border-t border-white/10">
-                <StorageMonitor />
-              </div>
+              <StorageMonitor />
             </div>
           </div>
         </div>

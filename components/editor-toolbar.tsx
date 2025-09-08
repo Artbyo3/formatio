@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 
 interface EditorToolbarProps {
-  onFormat: (format: string, value?: any) => void;
+  onFormat: (format: string, value?: string) => void;
   onSave: () => void;
   onExport: (format: 'txt' | 'pdf' | 'docx') => void;
   onImport: () => void;

@@ -24,10 +24,27 @@ import {
   Table,
 } from "lucide-react";
 
+interface LinkData {
+  url: string;
+  text: string;
+}
+
+interface ImageData {
+  src: string;
+  alt: string;
+  width: string;
+  height: string;
+}
+
+interface TableData {
+  rows: number;
+  cols: number;
+}
+
 interface InsertDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onInsert: (type: 'link' | 'image' | 'table', data: any) => void;
+  onInsert: (type: 'link' | 'image' | 'table', data: LinkData | ImageData | TableData) => void;
 }
 
 export function InsertDialog({ isOpen, onClose, onInsert }: InsertDialogProps) {

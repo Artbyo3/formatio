@@ -179,7 +179,7 @@ export function TextStats({ text }: TextStatsProps) {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Nivel de legibilidad</span>
-              <Badge variant={stats.readabilityColor as any}>
+              <Badge variant={stats.readabilityColor as "default" | "secondary" | "destructive" | "outline"}>
                 {stats.readabilityLevel}
               </Badge>
             </div>

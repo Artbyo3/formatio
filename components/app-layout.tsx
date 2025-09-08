@@ -8,6 +8,7 @@ import { ToolsView } from "./tools-view";
 import { SettingsView } from "./settings-view";
 import { Document, DocumentManager } from "@/lib/document-manager";
 import { ExportManager } from "@/lib/export-utils";
+import { RichTextEditorRef } from "./rich-text-editor";
 
 interface AppLayoutProps {
   documents: Document[];
@@ -24,7 +25,7 @@ interface AppLayoutProps {
   onUndo: () => void;
   onRedo: () => void;
   onSave: () => void;
-  editorRef: React.RefObject<any>;
+  editorRef: React.RefObject<RichTextEditorRef>;
 }
 
 export function AppLayout({

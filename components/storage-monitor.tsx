@@ -1,15 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Document } from "@/lib/document-manager";
 import { 
   HardDrive, 
   Trash2, 
-  AlertTriangle, 
-  CheckCircle,
-  MoreHorizontal
+  FileText,
+  Code,
+  Archive
 } from "lucide-react";
 
 interface StorageInfo {
@@ -19,25 +18,49 @@ interface StorageInfo {
   percentage: number;
   documents: number;
   estimatedSize: number;
+  breakdown: {
+    text: number;
+    json: number;
+    html: number;
+    other: number;
+  };
 }
 
 export function StorageMonitor() {
   const [storageInfo, setStorageInfo] = useState<StorageInfo | null>(null);
   const [isClearing, setIsClearing] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
 
   // Calcular uso de almacenamiento
   const calculateStorageUsage = () => {
     try {
       let totalSize = 0;
       let documentCount = 0;
+      const breakdown = {
+        text: 0,
+        json: 0,
+        html: 0,
+        other: 0
+      };
 
       // Calcular tamaño de documentos
       const documents = JSON.parse(localStorage.getItem('formatio_documents') || '[]');
       documentCount = documents.length;
       
       documents.forEach((doc: Document) => {
-        totalSize += JSON.stringify(doc).length * 2; // Aproximación en bytes
+        const docSize = JSON.stringify(doc).length * 2; // Aproximación en bytes
+        totalSize += docSize;
+        
+        // Clasificar por tipo de contenido
+        const content = doc.content.toLowerCase();
+        if (content.includes('<html') || content.includes('<div') || content.includes('<p')) {
+          breakdown.html += docSize;
+        } else if (content.includes('{') && content.includes('}') && content.includes('"')) {
+          breakdown.json += docSize;
+        } else if (content.trim().length > 0) {
+          breakdown.text += docSize;
+        } else {
+          breakdown.other += docSize;
+        }
       });
 
       // Calcular otros datos de la aplicación
@@ -46,7 +69,9 @@ export function StorageMonitor() {
       );
       
       otherKeys.forEach(key => {
-        totalSize += (localStorage.getItem(key)?.length || 0) * 2;
+        const keySize = (localStorage.getItem(key)?.length || 0) * 2;
+        totalSize += keySize;
+        breakdown.other += keySize;
       });
 
       // Estimación del límite de localStorage (5-10MB típicamente)
@@ -60,7 +85,8 @@ export function StorageMonitor() {
         total: estimatedLimit,
         percentage: Math.min(percentage, 100),
         documents: documentCount,
-        estimatedSize: totalSize
+        estimatedSize: totalSize,
+        breakdown
       };
     } catch (error) {
       console.error('Error calculating storage usage:', error);
@@ -138,80 +164,97 @@ export function StorageMonitor() {
     );
   }
 
-  const getStatusIcon = () => {
-    if (storageInfo.percentage >= 90) return <AlertTriangle className="h-3 w-3 text-red-500" />;
-    if (storageInfo.percentage >= 70) return <AlertTriangle className="h-3 w-3 text-yellow-500" />;
-    return <CheckCircle className="h-3 w-3 text-green-500" />;
+
+  const getBreakdownItems = () => {
+    const items = [];
+    if (storageInfo.breakdown.text > 0) {
+      items.push({
+        name: 'Texto',
+        size: storageInfo.breakdown.text,
+        icon: FileText,
+        color: 'bg-blue-500'
+      });
+    }
+    if (storageInfo.breakdown.html > 0) {
+      items.push({
+        name: 'HTML',
+        size: storageInfo.breakdown.html,
+        icon: Code,
+        color: 'bg-orange-500'
+      });
+    }
+    if (storageInfo.breakdown.json > 0) {
+      items.push({
+        name: 'JSON',
+        size: storageInfo.breakdown.json,
+        icon: Archive,
+        color: 'bg-green-500'
+      });
+    }
+    if (storageInfo.breakdown.other > 0) {
+      items.push({
+        name: 'Otros',
+        size: storageInfo.breakdown.other,
+        icon: HardDrive,
+        color: 'bg-gray-500'
+      });
+    }
+    return items;
   };
 
   return (
-    <div className="space-y-2">
-      {/* Vista compacta */}
-      <div 
-        className="flex items-center justify-between cursor-pointer hover:bg-white/5 rounded-lg p-2 smooth-transition"
-        onClick={() => setShowDetails(!showDetails)}
-      >
-        <div className="flex items-center gap-2">
-          {getStatusIcon()}
-          <span className="text-xs font-medium">Almacenamiento</span>
-          <span className="text-xs text-muted-foreground">
-            {storageInfo.percentage.toFixed(0)}%
-          </span>
-        </div>
-        <MoreHorizontal className="h-3 w-3 text-muted-foreground" />
+    <div className="space-y-1">
+      {/* Información básica */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span>{storageInfo.documents} docs</span>
+        <span>{formatBytes(storageInfo.used)} / {formatBytes(storageInfo.total)}</span>
       </div>
 
-      {/* Barra de progreso compacta */}
-      <div className="px-2">
-        <Progress value={storageInfo.percentage} className="h-1" />
-      </div>
-
-      {/* Detalles expandibles */}
-      {showDetails && (
-        <div className="space-y-3 text-xs">
-          <div className="flex justify-between text-muted-foreground">
-            <span>{formatBytes(storageInfo.used)} usados</span>
-            <span>{formatBytes(storageInfo.available)} libres</span>
-          </div>
-          
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Documentos:</span>
-            <span className="font-medium">{storageInfo.documents}</span>
-          </div>
-
-          {/* Advertencia compacta */}
-          {storageInfo.percentage >= 70 && (
-            <div className="flex items-center gap-2 p-2 bg-yellow-500/10 rounded-md">
-              <AlertTriangle className="h-3 w-3 text-yellow-500" />
-              <span className="text-yellow-600 text-xs">
-                {storageInfo.percentage >= 90 ? 'Almacenamiento lleno' : 'Almacenamiento alto'}
-              </span>
+      {/* Barra de almacenamiento visual */}
+      <div className="flex h-2 bg-muted/30 rounded-full overflow-hidden group relative">
+        {getBreakdownItems().map((item) => {
+          const percentage = (item.size / storageInfo.used) * 100;
+          return (
+            <div
+              key={item.name}
+              className={`${item.color} transition-all duration-300 hover:brightness-110 relative group/item`}
+              style={{ width: `${percentage}%` }}
+            >
+              {/* Tooltip que aparece arriba */}
+              <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black/90 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/item:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 pointer-events-none">
+                <div className="font-medium">{item.name}</div>
+                <div className="text-[10px] opacity-90">{formatBytes(item.size)}</div>
+                {/* Flecha del tooltip */}
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-black/90"></div>
+              </div>
             </div>
-          )}
+          );
+        })}
+      </div>
 
-          {/* Acciones compactas */}
-          <div className="space-y-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearOldDocuments}
-              disabled={isClearing || storageInfo.documents <= 20}
-              className="h-6 w-full text-xs"
-            >
-              <Trash2 className="h-3 w-3 mr-1" />
-              {isClearing ? 'Limpiando...' : 'Limpiar antiguos'}
-            </Button>
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearAllData}
-              className="h-6 w-full text-xs text-red-500 hover:text-red-600"
-            >
-              <Trash2 className="h-3 w-3 mr-1" />
-              Eliminar todo
-            </Button>
-          </div>
+      {/* Acciones solo cuando se necesita */}
+      {storageInfo.percentage >= 70 && (
+        <div className="flex gap-1 pt-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearOldDocuments}
+            disabled={isClearing || storageInfo.documents <= 20}
+            className="h-6 text-xs px-2"
+          >
+            <Trash2 className="h-3 w-3 mr-1" />
+            {isClearing ? 'Limpiando...' : 'Limpiar'}
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearAllData}
+            className="h-6 text-xs px-2 text-red-500 hover:text-red-600"
+          >
+            <Trash2 className="h-3 w-3 mr-1" />
+            Eliminar todo
+          </Button>
         </div>
       )}
     </div>
