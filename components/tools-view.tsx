@@ -9,12 +9,10 @@ import {
   BarChart3, 
   HardDrive, 
   FileText,
-  Palette,
   Hash,
   Calendar,
   Code,
-  Type,
-  Zap
+  Type
 } from "lucide-react";
 import { ToolsPanel } from "./tools-panel";
 import { StatsPanel } from "./stats-panel";
@@ -23,15 +21,11 @@ import { StorageMonitor } from "./storage-monitor";
 interface ToolsViewProps {
   content: string;
   onContentChange: (content: string) => void;
-  selection: { start: number; end: number };
-  onSelectionChange: (start: number, end: number) => void;
 }
 
 export function ToolsView({
   content,
-  onContentChange,
-  selection,
-  onSelectionChange
+  onContentChange
 }: ToolsViewProps) {
   const [activeTab, setActiveTab] = useState("format");
 
@@ -80,10 +74,8 @@ export function ToolsView({
             </CardHeader>
             <CardContent>
               <ToolsPanel
-                content={content}
-                onContentChange={onContentChange}
-                selection={selection}
-                onSelectionChange={onSelectionChange}
+                currentText={content}
+                onApplyFormat={onContentChange}
               />
             </CardContent>
           </Card>
@@ -103,8 +95,8 @@ export function ToolsView({
             </CardHeader>
             <CardContent>
               <StatsPanel
-                content={content}
-                selection={selection}
+                text={content}
+                onApplyResult={(result) => onContentChange(result)}
               />
             </CardContent>
           </Card>

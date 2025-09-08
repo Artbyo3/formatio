@@ -3,12 +3,11 @@
 import { useEffect, useRef } from "react"
 
 interface AdSpaceProps {
-  position: "left" | "right"
   className?: string
   adSlot: string
 }
 
-export function AdSpace({ position, className = "", adSlot }: AdSpaceProps) {
+export function AdSpace({ className = "", adSlot }: AdSpaceProps) {
   const adRef = useRef<HTMLDivElement>(null)
   const initialized = useRef(false)
 
@@ -41,7 +40,7 @@ export function AdSpace({ position, className = "", adSlot }: AdSpaceProps) {
       // Initialize with a delay to ensure AdSense script is loaded
       setTimeout(() => {
         try {
-          // @ts-ignore
+          // @ts-expect-error - AdSense global variable not typed
           ;(window.adsbygoogle = window.adsbygoogle || []).push({})
         } catch (error) {
           console.error("Error initializing ad:", error)

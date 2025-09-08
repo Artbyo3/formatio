@@ -7,20 +7,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { 
-  Settings, 
   Palette, 
-  Keyboard, 
   Save, 
   Download, 
   Upload,
   Trash2,
   AlertTriangle,
-  CheckCircle,
   Moon,
   Sun,
-  Monitor
+  Monitor,
+  FileText,
+  BarChart3,
+  HardDrive
 } from "lucide-react";
 
 interface SettingsViewProps {
@@ -52,7 +51,7 @@ export function SettingsView({
 
   const [hasChanges, setHasChanges] = useState(false);
 
-  const updateSetting = (key: string, value: any) => {
+  const updateSetting = (key: string, value: string | number | boolean) => {
     setSettings(prev => ({ ...prev, [key]: value }));
     setHasChanges(true);
   };

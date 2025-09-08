@@ -18,9 +18,6 @@ import {
   List,
   ListOrdered,
   Quote,
-  Link,
-  Image,
-  Table,
   MoreHorizontal,
   Settings,
   BarChart3,
@@ -31,7 +28,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -284,7 +280,7 @@ export function CleanEditor({
           <CardContent className="p-0 h-full">
             <RichTextEditor
               ref={editorRef}
-              content={currentDocument.content}
+              document={currentDocument}
               onContentChange={onUpdateContent}
               onSelectionChange={onUpdateSelection}
               className="h-full"

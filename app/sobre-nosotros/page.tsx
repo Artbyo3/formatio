@@ -65,7 +65,7 @@ export default function SobreNosotros() {
 
           <h3 className="text-lg font-medium">Limitación de Responsabilidad</h3>
           <p>
-            Proporcionamos este servicio "tal cual", sin garantías de ningún tipo. No somos responsables de ningún daño
+            Proporcionamos este servicio &quot;tal cual&quot;, sin garantías de ningún tipo. No somos responsables de ningún daño
             que pueda resultar del uso de nuestra herramienta.
           </p>
 

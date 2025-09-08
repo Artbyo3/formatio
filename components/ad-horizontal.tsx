@@ -40,7 +40,7 @@ export function AdHorizontal({ className = "", adSlot }: AdHorizontalProps) {
       // Initialize with a delay to ensure AdSense script is loaded
       setTimeout(() => {
         try {
-          // @ts-ignore
+          // @ts-expect-error - AdSense global variable not typed
           ;(window.adsbygoogle = window.adsbygoogle || []).push({})
         } catch (error) {
           console.error("Error initializing ad:", error)

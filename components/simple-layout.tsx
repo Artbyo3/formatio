@@ -23,7 +23,6 @@ import {
   BarChart3,
   HardDrive,
   X,
-  ChevronRight
 } from "lucide-react";
 import { RichTextEditor } from "./rich-text-editor";
 import { ToolsPanel } from "./tools-panel";
@@ -31,9 +30,7 @@ import { StatsPanel } from "./stats-panel";
 import { StorageMonitor } from "./storage-monitor";
 
 interface SimpleLayoutProps {
-  documents: any[];
   currentDocument: any;
-  onSwitchDocument: (id: string) => void;
   onCreateDocument: () => void;
   onUpdateTitle: (title: string) => void;
   onUpdateContent: (content: string) => void;
@@ -48,9 +45,7 @@ interface SimpleLayoutProps {
 }
 
 export function SimpleLayout({
-  documents,
   currentDocument,
-  onSwitchDocument,
   onCreateDocument,
   onUpdateTitle,
   onUpdateContent,
@@ -140,16 +135,14 @@ export function SimpleLayout({
           <div className="flex-1 overflow-y-auto p-4">
             {sidebarTab === 'tools' && (
               <ToolsPanel
-                content={currentDocument.content}
-                onContentChange={onUpdateContent}
-                selection={{ start: 0, end: 0 }}
-                onSelectionChange={onUpdateSelection}
+                currentText={currentDocument?.content || ''}
+                onApplyFormat={onUpdateContent}
               />
             )}
             {sidebarTab === 'stats' && (
               <StatsPanel
-                content={currentDocument.content}
-                selection={{ start: 0, end: 0 }}
+                text={currentDocument?.content || ''}
+                onApplyResult={onUpdateContent}
               />
             )}
             {sidebarTab === 'storage' && (
@@ -310,7 +303,7 @@ export function SimpleLayout({
             <CardContent className="p-0 h-full">
               <RichTextEditor
                 ref={editorRef}
-                content={currentDocument.content}
+                document={currentDocument}
                 onContentChange={onUpdateContent}
                 onSelectionChange={onUpdateSelection}
                 className="h-full"

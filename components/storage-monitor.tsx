@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { Document } from "@/lib/document-manager";
 import { 
   HardDrive, 
   Trash2, 
@@ -35,7 +36,7 @@ export function StorageMonitor() {
       const documents = JSON.parse(localStorage.getItem('formatio_documents') || '[]');
       documentCount = documents.length;
       
-      documents.forEach((doc: any) => {
+      documents.forEach((doc: Document) => {
         totalSize += JSON.stringify(doc).length * 2; // Aproximación en bytes
       });
 
@@ -95,7 +96,7 @@ export function StorageMonitor() {
       const documents = JSON.parse(localStorage.getItem('formatio_documents') || '[]');
       
       // Ordenar por fecha de actualización y mantener solo los 20 más recientes
-      const sortedDocs = documents.sort((a: any, b: any) => 
+          const sortedDocs = documents.sort((a: Document, b: Document) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
       

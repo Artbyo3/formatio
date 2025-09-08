@@ -6,17 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { 
   FileText, 
-  Settings, 
   BarChart3, 
   Wrench, 
-  Search, 
   Download,
   Upload,
   Save,
   Plus,
-  Folder,
   Clock,
-  Star,
   Trash2,
   Eye,
   EyeOff
@@ -54,7 +50,6 @@ export function MainSidebar({
   isDirty
 }: MainSidebarProps) {
   const [showRecent, setShowRecent] = useState(true);
-  const [showFavorites, setShowFavorites] = useState(false);
 
   const recentDocuments = documents
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())

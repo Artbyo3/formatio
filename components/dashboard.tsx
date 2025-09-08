@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -25,10 +25,6 @@ import {
   Download,
   Star,
   Clock,
-  Calendar,
-  BarChart3,
-  HardDrive,
-  Settings
 } from "lucide-react";
 
 interface Document {
@@ -50,7 +46,6 @@ interface DashboardProps {
   onDeleteDocument: (id: string) => void;
   onExportDocument: (id: string, format: string) => void;
   onToggleFavorite: (id: string) => void;
-  onSetCategory: (id: string, category: string) => void;
 }
 
 export function Dashboard({
@@ -59,26 +54,12 @@ export function Dashboard({
   onCreateDocument,
   onDeleteDocument,
   onExportDocument,
-  onToggleFavorite,
-  onSetCategory
+  onToggleFavorite
 }: DashboardProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [sortBy, setSortBy] = useState<'updated' | 'created' | 'title' | 'words'>('updated');
   const [filterBy, setFilterBy] = useState<'all' | 'favorites' | 'recent'>('all');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  // Estadísticas del dashboard
-  const stats = {
-    totalDocuments: documents.length,
-    totalWords: documents.reduce((sum, doc) => sum + doc.wordCount, 0),
-    totalCharacters: documents.reduce((sum, doc) => sum + doc.charCount, 0),
-    favorites: documents.filter(doc => doc.isFavorite).length,
-    recent: documents.filter(doc => {
-      const daysSinceUpdate = (Date.now() - new Date(doc.updatedAt).getTime()) / (1000 * 60 * 60 * 24);
-      return daysSinceUpdate <= 7;
-    }).length
-  };
 
   // Filtrar y ordenar documentos
   const filteredDocuments = documents
@@ -94,26 +75,16 @@ export function Dashboard({
         return daysSinceUpdate <= 7;
       }
       
-      if (selectedCategory !== 'all') return doc.category === selectedCategory;
+      // Category filtering removed for simplicity
       
       return true;
     })
     .sort((a, b) => {
-      switch (sortBy) {
-        case 'title':
-          return a.title.localeCompare(b.title);
-        case 'words':
-          return b.wordCount - a.wordCount;
-        case 'created':
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        case 'updated':
-        default:
-          return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-      }
+      // Sort by updated date by default
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
 
   // Categorías únicas
-  const categories = ['all', ...Array.from(new Set(documents.map(doc => doc.category).filter(Boolean)))];
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('es-ES', {
@@ -142,7 +113,7 @@ export function Dashboard({
         <div>
           <h1 className="text-2xl font-semibold">Mis Documentos</h1>
           <p className="text-sm text-muted-foreground">
-            {stats.totalDocuments} documentos • {stats.totalWords.toLocaleString()} palabras
+            {documents.length} documentos
           </p>
         </div>
         <Button onClick={onCreateDocument} size="sm">
@@ -152,22 +123,12 @@ export function Dashboard({
       </div>
 
       {/* Estadísticas compactas - solo si hay documentos */}
-      {stats.totalDocuments > 0 && (
+      {documents.length > 0 && (
         <div className="flex gap-4 text-sm">
           <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
             <FileText className="h-4 w-4" />
-            <span className="font-medium">{stats.totalDocuments}</span>
+            <span className="font-medium">{documents.length}</span>
             <span className="text-muted-foreground">documentos</span>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
-            <Star className="h-4 w-4" />
-            <span className="font-medium">{stats.favorites}</span>
-            <span className="text-muted-foreground">favoritos</span>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
-            <Clock className="h-4 w-4" />
-            <span className="font-medium">{stats.recent}</span>
-            <span className="text-muted-foreground">recientes</span>
           </div>
         </div>
       )}

@@ -9,14 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { 
   CheckCircle, 
   XCircle, 
-  Mail, 
-  Globe, 
-  Phone, 
-  CreditCard,
-  Hash,
-  Calendar,
-  FileText,
-  AlertTriangle
+  FileText
 } from "lucide-react";
 
 interface TextValidatorsProps {

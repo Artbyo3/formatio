@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -8,7 +7,6 @@ import {
   FileText, 
   Settings, 
   BarChart3, 
-  HardDrive,
   Menu,
   X
 } from "lucide-react";

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Document } from "@/lib/document-manager";
+import { RichTextEditorRef } from "./rich-text-editor";
 import { 
   LayoutDashboard, 
   FileText, 
@@ -13,8 +15,8 @@ import { WorkspaceView } from "./workspace-view";
 import { StorageMonitor } from "./storage-monitor";
 
 interface MainLayoutProps {
-  documents: any[];
-  currentDocument: any;
+  documents: Document[];
+  currentDocument: Document | null;
   onSwitchDocument: (id: string) => void;
   onCreateDocument: () => void;
   onDeleteDocument: (id: string) => void;
@@ -27,7 +29,7 @@ interface MainLayoutProps {
   onUndo: () => void;
   onRedo: () => void;
   onSave: () => void;
-  editorRef: React.RefObject<any>;
+  editorRef: React.RefObject<RichTextEditorRef | null>;
 }
 
 type View = 'dashboard' | 'workspace';

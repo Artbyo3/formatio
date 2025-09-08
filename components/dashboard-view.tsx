@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -25,15 +25,8 @@ import {
   Download,
   Star,
   Clock,
-  Calendar,
-  BarChart3,
-  HardDrive,
-  Settings,
-  Eye,
-  Copy,
-  Zap,
-  Upload,
-  X
+  X,
+  Zap
 } from "lucide-react";
 
 interface DashboardViewProps {
@@ -101,17 +94,6 @@ export function DashboardView({
     }
   ];
 
-  // Estadísticas del dashboard
-  const stats = {
-    totalDocuments: documents.length,
-    totalWords: documents.reduce((sum, doc) => sum + (doc.wordCount || 0), 0),
-    totalCharacters: documents.reduce((sum, doc) => sum + (doc.charCount || 0), 0),
-    favorites: documents.filter(doc => doc.isFavorite).length,
-    recent: documents.filter(doc => {
-      const daysSinceUpdate = (Date.now() - new Date(doc.updatedAt).getTime()) / (1000 * 60 * 60 * 24);
-      return daysSinceUpdate <= 7;
-    }).length
-  };
 
   // Filtrar y ordenar documentos
   const filteredDocuments = documents

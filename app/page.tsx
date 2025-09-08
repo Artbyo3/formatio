@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useEditor } from "@/lib/use-editor";
 import { MainLayout } from "@/components/main-layout";
 import { RichTextEditorRef } from "@/components/rich-text-editor";
-import { ExportManager } from "@/lib/export-utils";
 
 export default function Home() {
   const {
@@ -24,7 +23,7 @@ export default function Home() {
     redo
   } = useEditor();
 
-  const editorRef = useRef<RichTextEditorRef>(null);
+  const editorRef = useRef<RichTextEditorRef | null>(null);
 
   // Crear documento inicial si no hay ninguno
   useEffect(() => {

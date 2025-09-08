@@ -2,24 +2,19 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { 
   Code, 
-  Hash, 
   Calculator, 
   Wand2, 
   FileText, 
   Lock, 
   Globe, 
-  Calendar,
   Copy,
-  Check,
-  RotateCcw
+  Check
 } from "lucide-react";
 
 interface ToolsPanelProps {
@@ -44,7 +39,7 @@ export function ToolsPanel({ onApplyFormat, currentText }: ToolsPanelProps) {
       const parsed = JSON.parse(inputText || currentText);
       const formatted = JSON.stringify(parsed, null, 2);
       setOutputText(formatted);
-    } catch (error) {
+    } catch {
       setOutputText("Error: JSON inválido");
     }
   };
@@ -55,7 +50,7 @@ export function ToolsPanel({ onApplyFormat, currentText }: ToolsPanelProps) {
       const parsed = JSON.parse(inputText || currentText);
       const minified = JSON.stringify(parsed);
       setOutputText(minified);
-    } catch (error) {
+    } catch {
       setOutputText("Error: JSON inválido");
     }
   };
@@ -68,7 +63,7 @@ export function ToolsPanel({ onApplyFormat, currentText }: ToolsPanelProps) {
       const serializer = new XMLSerializer();
       const formatted = serializer.serializeToString(xmlDoc);
       setOutputText(formatted);
-    } catch (error) {
+    } catch {
       setOutputText("Error: XML inválido");
     }
   };
@@ -126,7 +121,7 @@ export function ToolsPanel({ onApplyFormat, currentText }: ToolsPanelProps) {
       const text = inputText || currentText;
       const decoded = decodeURIComponent(escape(atob(text)));
       setOutputText(decoded);
-    } catch (error) {
+    } catch {
       setOutputText("Error: Base64 inválido");
     }
   };
@@ -144,7 +139,7 @@ export function ToolsPanel({ onApplyFormat, currentText }: ToolsPanelProps) {
       const text = inputText || currentText;
       const decoded = decodeURIComponent(text);
       setOutputText(decoded);
-    } catch (error) {
+    } catch {
       setOutputText("Error: URL inválida");
     }
   };

@@ -19,11 +19,8 @@ import {
   Settings, 
   MoreHorizontal,
   FileText,
-  Clock,
   AlertCircle,
-  CheckCircle,
-  Eye,
-  EyeOff
+  CheckCircle
 } from "lucide-react";
 
 interface ImprovedHeaderProps {

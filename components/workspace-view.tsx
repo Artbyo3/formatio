@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   FileText, 
   Save, 
@@ -20,27 +20,20 @@ import {
   ListOrdered,
   Quote,
   Link,
-  Image,
-  Table,
-  MoreHorizontal,
-  Settings,
   Wrench,
   BarChart3,
   ArrowLeft,
   Type,
-  Hash,
-  Code,
-  Zap,
-  Palette,
   X
 } from "lucide-react";
-import { RichTextEditor } from "./rich-text-editor";
+import { RichTextEditor, RichTextEditorRef } from "./rich-text-editor";
 import { ToolsPanel } from "./tools-panel";
 import { StatsPanel } from "./stats-panel";
+import { Document } from "@/lib/document-manager";
 
 interface WorkspaceViewProps {
-  documents: any[];
-  currentDocument: any;
+  documents: Document[];
+  currentDocument: Document | null;
   onSwitchDocument: (id: string) => void;
   onCreateDocument: () => void;
   onUpdateTitle: (title: string) => void;
@@ -52,15 +45,12 @@ interface WorkspaceViewProps {
   onUndo: () => void;
   onRedo: () => void;
   onSave: () => void;
-  editorRef: React.RefObject<any>;
+  editorRef: React.RefObject<RichTextEditorRef | null>;
   onGoToDashboard: () => void;
 }
 
 export function WorkspaceView({
-  documents,
   currentDocument,
-  onSwitchDocument,
-  onCreateDocument,
   onUpdateTitle,
   onUpdateContent,
   onUpdateSelection,
@@ -80,7 +70,9 @@ export function WorkspaceView({
   // Formatear fecha de forma segura para evitar errores de hidratación
   useEffect(() => {
     if (currentDocument?.updatedAt) {
-      const date = new Date(currentDocument.updatedAt);
+      const date = currentDocument.updatedAt instanceof Date 
+        ? currentDocument.updatedAt 
+        : new Date(currentDocument.updatedAt);
       setFormattedDate(date.toLocaleDateString('es-ES', {
         day: '2-digit',
         month: '2-digit',
@@ -132,7 +124,7 @@ export function WorkspaceView({
             </div>
             
             {/* Tabs del panel */}
-            <Tabs value={toolsTab} onValueChange={(value: any) => setToolsTab(value)}>
+            <Tabs value={toolsTab} onValueChange={(value) => setToolsTab(value as 'format' | 'analysis')}>
               <TabsList className="grid w-full grid-cols-2 glass rounded-lg p-1">
                 <TabsTrigger value="format" className="text-xs rounded-md data-[state=active]:glass data-[state=active]:shadow-glass">
                   <Type className="h-3 w-3 mr-1" />
@@ -152,10 +144,8 @@ export function WorkspaceView({
               <div className="space-y-4">
                 <h4 className="font-medium text-sm text-muted-foreground mb-3">Herramientas de Formateo</h4>
                 <ToolsPanel
-                  content={currentDocument.content}
-                  onContentChange={onUpdateContent}
-                  selection={{ start: 0, end: 0 }}
-                  onSelectionChange={onUpdateSelection}
+                  currentText={currentDocument.content}
+                  onApplyFormat={onUpdateContent}
                 />
               </div>
             )}
@@ -163,8 +153,8 @@ export function WorkspaceView({
               <div className="space-y-4">
                 <h4 className="font-medium text-sm text-muted-foreground mb-3">Análisis de Texto</h4>
                 <StatsPanel
-                  content={currentDocument.content}
-                  selection={{ start: 0, end: 0 }}
+                  text={currentDocument.content}
+                  onApplyResult={onUpdateContent}
                 />
               </div>
             )}
@@ -374,7 +364,7 @@ export function WorkspaceView({
             <CardContent className="p-0 h-full">
               <RichTextEditor
                 ref={editorRef}
-                content={currentDocument.content}
+                document={currentDocument}
                 onContentChange={onUpdateContent}
                 onSelectionChange={onUpdateSelection}
                 className="h-full rounded-2xl"

@@ -11,7 +11,6 @@ import {
   Eye, 
   BookOpen,
   TrendingUp,
-  Users,
   Target
 } from "lucide-react";
 
@@ -213,7 +212,7 @@ export function TextStats({ text }: TextStatsProps) {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {stats.mostCommonWords.map(({ word, count }, index) => (
+              {stats.mostCommonWords.map(({ word, count }) => (
                 <div key={word} className="flex items-center justify-between">
                   <span className="text-sm font-medium">{word}</span>
                   <div className="flex items-center gap-2">

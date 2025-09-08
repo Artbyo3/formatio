@@ -6,6 +6,8 @@ export interface Document {
   updatedAt: Date;
   wordCount: number;
   charCount: number;
+  isFavorite?: boolean;
+  category?: string;
 }
 
 export class DocumentManager {
@@ -20,7 +22,7 @@ export class DocumentManager {
       if (!stored) return [];
       
       const documents = JSON.parse(stored);
-      return documents.map((doc: any) => ({
+      return documents.map((doc: Document) => ({
         ...doc,
         createdAt: new Date(doc.createdAt),
         updatedAt: new Date(doc.updatedAt)
@@ -94,7 +96,9 @@ export class DocumentManager {
       createdAt: now,
       updatedAt: now,
       wordCount: 0,
-      charCount: 0
+      charCount: 0,
+      isFavorite: false,
+      category: 'General'
     };
   }
 

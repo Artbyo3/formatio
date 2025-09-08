@@ -29,7 +29,6 @@ import {
   Type,
   Palette,
   MoreHorizontal,
-  ChevronDown
 } from "lucide-react";
 
 interface ImprovedToolbarProps {

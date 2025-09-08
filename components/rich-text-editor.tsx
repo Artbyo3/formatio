@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, forwardRef, useImperativeHandle } from "react";
+import { useRef, useEffect, useState, forwardRef, useImperativeHandle, useCallback } from "react";
 import { Document } from "@/lib/document-manager";
 
 interface RichTextEditorProps {
@@ -35,12 +35,12 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
   }, [document]);
 
   // Manejar cambios en el contenido
-  const handleInput = () => {
+  const handleInput = useCallback(() => {
     if (editorRef.current && !isComposing) {
       const content = editorRef.current.innerHTML;
       onContentChange(content);
     }
-  };
+  }, [isComposing, onContentChange]);
 
   // Manejar cambios en la selección
   const handleSelectionChange = () => {
@@ -58,7 +58,9 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
   // Calcular offset de texto
   const getTextOffset = (container: Node, node: Node, offset: number): number => {
     let textOffset = 0;
-    const walker = document.createTreeWalker(
+    if (typeof window === 'undefined' || !window.document) return 0;
+    
+    const walker = window.document.createTreeWalker(
       container,
       NodeFilter.SHOW_TEXT,
       null
@@ -112,19 +114,19 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
   };
 
   // Aplicar formato
-  const applyFormat = (command: string, value?: string) => {
-    if (editorRef.current) {
+  const applyFormat = useCallback((command: string, value?: string) => {
+    if (editorRef.current && typeof window !== 'undefined' && window.document) {
       editorRef.current.focus();
-      document.execCommand(command, false, value);
+      window.document.execCommand(command, false, value);
       handleInput();
     }
-  };
+  }, [handleInput]);
 
   // Exponer funciones para uso externo
   useImperativeHandle(ref, () => ({
     applyFormat,
     focus: () => editorRef.current?.focus()
-  }), []);
+  }), [applyFormat]);
 
   return (
     <div
@@ -160,3 +162,5 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
     />
   );
 });
+
+RichTextEditor.displayName = 'RichTextEditor';

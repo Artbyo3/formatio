@@ -46,8 +46,6 @@ export function AppLayout({
 }: AppLayoutProps) {
   const [currentView, setCurrentView] = useState<AppView>('dashboard');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showToolsPanel, setShowToolsPanel] = useState(false);
-  const [showStatsPanel, setShowStatsPanel] = useState(false);
 
   // Cerrar menú móvil al cambiar de vista
   useEffect(() => {
@@ -86,17 +84,6 @@ export function AppLayout({
     window.location.reload(); // Simplificado para este ejemplo
   };
 
-  // Manejar categorías
-  const handleSetCategory = (documentId: string, category: string) => {
-    const doc = documents.find(d => d.id === documentId);
-    if (!doc) return;
-
-    const updatedDoc = { ...doc, category };
-    DocumentManager.saveDocument(updatedDoc);
-    
-    // Actualizar la lista de documentos
-    window.location.reload(); // Simplificado para este ejemplo
-  };
 
   // Manejar exportación de configuración
   const handleExportSettings = () => {
@@ -160,7 +147,6 @@ export function AppLayout({
             onDeleteDocument={onDeleteDocument}
             onExportDocument={handleExportDocument}
             onToggleFavorite={handleToggleFavorite}
-            onSetCategory={handleSetCategory}
           />
         );
       
@@ -181,7 +167,7 @@ export function AppLayout({
             onRedo={onRedo}
             onSave={onSave}
             editorRef={editorRef}
-            onViewChange={setCurrentView}
+            onViewChange={(view: string) => setCurrentView(view as AppView)}
           />
         );
       
@@ -190,8 +176,6 @@ export function AppLayout({
           <ToolsView
             content={currentDocument?.content || ''}
             onContentChange={onUpdateContent}
-            selection={{ start: 0, end: 0 }}
-            onSelectionChange={onUpdateSelection}
           />
         );
       
@@ -213,7 +197,6 @@ export function AppLayout({
             onDeleteDocument={() => {}}
             onExportDocument={() => {}}
             onToggleFavorite={() => {}}
-            onSetCategory={() => {}}
           />
         );
     }

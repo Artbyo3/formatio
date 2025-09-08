@@ -38,7 +38,6 @@ interface ImprovedLayoutProps {
   isSearchOpen: boolean;
   isInsertOpen: boolean;
   onSearch: () => void;
-  onInsert: () => void;
   onCloseSearch: () => void;
   onCloseInsert: () => void;
   onSearchAction: (query: string, options: any) => void;
@@ -77,7 +76,6 @@ export function ImprovedLayout({
   isSearchOpen,
   isInsertOpen,
   onSearch,
-  onInsert,
   onCloseSearch,
   onCloseInsert,
   onSearchAction,

@@ -3,7 +3,7 @@ import * as React from "react";
 // Simplified Badge without external utilities
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: "default" | "outline";
+  variant?: "default" | "outline" | "destructive" | "secondary";
 }
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
@@ -11,6 +11,10 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     const variantClass =
       variant === "outline"
         ? "border border-gray-300 bg-transparent"
+        : variant === "destructive"
+        ? "bg-red-500 text-white"
+        : variant === "secondary"
+        ? "bg-gray-100 text-gray-700"
         : "bg-gray-200 text-gray-800";
     return (
       <span
@@ -23,5 +27,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     );
   }
 );
+
+Badge.displayName = 'Badge';
 
 export { Badge };
