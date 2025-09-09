@@ -8,10 +8,11 @@ import {
   Settings, 
   BarChart3, 
   Menu,
-  X
+  X,
+  BookOpen
 } from "lucide-react";
 
-export type AppView = 'dashboard' | 'editor' | 'tools' | 'settings';
+export type AppView = 'dashboard' | 'editor' | 'tools' | 'settings' | 'blog';
 
 interface AppNavigationProps {
   currentView: AppView;
@@ -49,6 +50,12 @@ export function AppNavigation({
       label: 'Herramientas',
       icon: BarChart3,
       description: 'Formateo y análisis'
+    },
+    {
+      id: 'blog' as AppView,
+      label: 'Blog',
+      icon: BookOpen,
+      description: 'Recursos y guías'
     },
     {
       id: 'settings' as AppView,
@@ -147,8 +154,9 @@ export function AppNavigation({
           })}
         </nav>
 
+
         {/* Información adicional */}
-        <div className="p-4 border-t mt-auto">
+        <div className="p-4 border-t">
           <div className="text-xs text-muted-foreground space-y-1">
             <p>• Datos almacenados localmente</p>
             <p>• Sin conexión a internet requerida</p>

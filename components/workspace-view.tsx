@@ -30,6 +30,7 @@ import {
   Zap
 } from "lucide-react";
 import { RichTextEditor, RichTextEditorRef } from "./rich-text-editor";
+import { FlexibleWorkspace } from "./flexible-workspace";
 import { ToolsPanel } from "./tools-panel";
 import { StatsPanel } from "./stats-panel";
 import { Document } from "@/lib/document-manager";
@@ -50,6 +51,7 @@ interface WorkspaceViewProps {
   onSave: () => void;
   editorRef: React.RefObject<RichTextEditorRef | null>;
   onGoToDashboard: () => void;
+  useFlexibleWorkspace?: boolean;
 }
 
 export function WorkspaceView({
@@ -65,7 +67,8 @@ export function WorkspaceView({
   onRedo,
   onSave,
   editorRef,
-  onGoToDashboard
+  onGoToDashboard,
+  useFlexibleWorkspace = true
 }: WorkspaceViewProps) {
   const [showToolsPanel, setShowToolsPanel] = useState(false);
   const [toolsTab, setToolsTab] = useState<'format' | 'analysis' | 'storage'>('format');
@@ -129,6 +132,26 @@ export function WorkspaceView({
     }
   }, [currentDocument?.updatedAt]);
 
+  // Si se usa el workspace flexible, renderizar el nuevo componente
+  if (useFlexibleWorkspace) {
+    return (
+      <FlexibleWorkspace
+        document={currentDocument}
+        onContentChange={onUpdateContent}
+        onSelectionChange={onUpdateSelection}
+        onTitleChange={onUpdateTitle}
+        onSave={onSave}
+        onUndo={onUndo}
+        onRedo={onRedo}
+        isDirty={isDirty}
+        canUndo={canUndo}
+        canRedo={canRedo}
+        className="h-full"
+      />
+    );
+  }
+
+  // Workspace original (mantener compatibilidad)
   if (!currentDocument) {
     return (
       <div className="flex-1 flex items-center justify-center bg-muted/30">

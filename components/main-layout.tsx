@@ -8,11 +8,13 @@ import {
   LayoutDashboard, 
   FileText, 
   Menu,
-  X
+  X,
+  BookOpen
 } from "lucide-react";
 import { DashboardView } from "./dashboard-view";
 import { WorkspaceView } from "./workspace-view";
 import { StorageMonitor } from "./storage-monitor";
+import { BlogView } from "./blog-view";
 
 interface MainLayoutProps {
   documents: Document[];
@@ -32,7 +34,7 @@ interface MainLayoutProps {
   editorRef: React.RefObject<RichTextEditorRef | null>;
 }
 
-type View = 'dashboard' | 'workspace';
+type View = 'dashboard' | 'workspace' | 'blog';
 
 export function MainLayout({
   documents,
@@ -100,6 +102,20 @@ export function MainLayout({
                 <span className="font-medium text-left">Área de Trabajo</span>
               </div>
             </Button>
+            <Button
+              variant={currentView === 'blog' ? 'default' : 'ghost'}
+              className={`w-full justify-start h-12 rounded-xl smooth-transition ${
+                currentView === 'blog' 
+                  ? 'glass shadow-glass' 
+                  : 'hover:glass hover:shadow-glass'
+              }`}
+              onClick={() => setCurrentView('blog')}
+            >
+              <div className="flex items-center w-full">
+                <BookOpen className="h-5 w-5 mr-3 flex-shrink-0" />
+                <span className="font-medium text-left">Blog y Recursos</span>
+              </div>
+            </Button>
           </nav>
         </div>
 
@@ -157,6 +173,19 @@ export function MainLayout({
                   <span className="font-medium text-left">Área de Trabajo</span>
                 </div>
               </Button>
+              <Button
+                variant={currentView === 'blog' ? 'secondary' : 'ghost'}
+                className="w-full justify-start h-12 rounded-xl"
+                onClick={() => {
+                  setCurrentView('blog');
+                  setShowMobileMenu(false);
+                }}
+              >
+                <div className="flex items-center w-full">
+                  <BookOpen className="h-5 w-5 mr-3 flex-shrink-0" />
+                  <span className="font-medium text-left">Blog y Recursos</span>
+                </div>
+              </Button>
             </div>
           )}
         </div>
@@ -176,7 +205,7 @@ export function MainLayout({
               }}
               onDeleteDocument={onDeleteDocument}
             />
-          ) : (
+          ) : currentView === 'workspace' ? (
             <WorkspaceView
               documents={documents}
               currentDocument={currentDocument}
@@ -194,6 +223,8 @@ export function MainLayout({
               editorRef={editorRef}
               onGoToDashboard={() => setCurrentView('dashboard')}
             />
+          ) : (
+            <BlogView />
           )}
         </div>
       </div>

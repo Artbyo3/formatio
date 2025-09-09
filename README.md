@@ -42,6 +42,7 @@ Un editor de texto completo online similar a Google Docs o Microsoft Word, que f
 - `Ctrl+Z`: Deshacer
 - `Ctrl+Y` o `Ctrl+Shift+Z`: Rehacer
 
+
 ### 🔄 Historial de Cambios
 - **Deshacer/Rehacer**: Historial completo de cambios
 - **Persistencia**: El historial se mantiene durante la sesión

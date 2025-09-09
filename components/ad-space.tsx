@@ -1,59 +1,57 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
+import { useEffect } from "react";
 
 interface AdSpaceProps {
-  className?: string
-  adSlot: string
+  format?: 'horizontal' | 'vertical';
+  className?: string;
+  label?: string;
 }
 
-export function AdSpace({ className = "", adSlot }: AdSpaceProps) {
-  const adRef = useRef<HTMLDivElement>(null)
-  const initialized = useRef(false)
-
+export function AdSpace({ 
+  format = 'horizontal', 
+  className = "",
+  label = "Área de Anuncio"
+}: AdSpaceProps) {
   useEffect(() => {
-    // Only run on client
-    if (typeof window === "undefined" || !adRef.current || initialized.current) return
-
-    initialized.current = true
-
-    // Clear any previous content
-    while (adRef.current.firstChild) {
-      adRef.current.removeChild(adRef.current.firstChild)
-    }
-
     try {
-      // Create the ins element manually
-      const ins = document.createElement("ins")
-      ins.className = "adsbygoogle"
-      ins.style.display = "block"
-      ins.style.width = "100%"
-      ins.style.height = "100%"
-      ins.setAttribute("data-ad-client", "ca-pub-5211105409955429")
-      ins.setAttribute("data-ad-slot", adSlot)
-      ins.setAttribute("data-ad-format", "auto")
-      ins.setAttribute("data-full-width-responsive", "true")
-
-      // Add to DOM
-      adRef.current.appendChild(ins)
-
-      // Initialize with a delay to ensure AdSense script is loaded
-      setTimeout(() => {
-        try {
-          // @ts-expect-error - AdSense global variable not typed
-          ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-        } catch (error) {
-          console.error("Error initializing ad:", error)
-        }
-      }, 200)
+      // Cargar el script de Google Ads si no está cargado
+      if (typeof window !== 'undefined' && !(window as any).adsbygoogle) {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5211105409955429';
+        script.crossOrigin = 'anonymous';
+        document.head.appendChild(script);
+      }
     } catch (error) {
-      console.error("Error setting up ad:", error)
+      console.log('Error loading Google Ads script:', error);
     }
-  }, [adSlot])
+  }, []);
+
+  const adClient = 'ca-pub-5211105409955429';
+  const adSlot = '6056376493';
 
   return (
-    <div className={`w-full h-full ${className}`}>
-      <div ref={adRef} className="w-full h-full min-h-[600px]"></div>
+    <div className={`bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center ${className}`}>
+      <div className="text-sm text-gray-500 mb-2">{label}</div>
+      <div className="text-xs text-gray-400">
+        {format === 'horizontal' ? '728x90 - Horizontal' : '300x250 - Vertical'}
+      </div>
+      <div className="mt-4">
+        <ins 
+          className="adsbygoogle"
+          style={{ display: 'block' }}
+          data-ad-client={adClient}
+          data-ad-slot={adSlot}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+        <script 
+          dangerouslySetInnerHTML={{
+            __html: '(adsbygoogle = window.adsbygoogle || []).push({});'
+          }}
+        />
+      </div>
     </div>
-  )
+  );
 }
